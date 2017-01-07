@@ -1,13 +1,13 @@
 
-
 public class Node { //Each node represents a move number.
-    private Node parent = new Node(), left = new Node(), right = new Node();
+    private Node parent, left, right;
     public int indexMove, indexRod, indexRing;
+
 
     //Create node. It defines where the ring
     public void create(Node parent, boolean sideBranch, int[] currentRods){// if sideBranch == false, then this left branch, else - right branch;
         this.parent = parent;
-        indexRing = this.parent.indexRing - 1;
+        indexRing = this.parent.indexRing-1;
         if(sideBranch){//right branch
             indexMove = parent.indexMove + (int)Math.pow(2, indexRing)/2;
             indexRod = parent.indexRod;
@@ -15,12 +15,15 @@ public class Node { //Each node represents a move number.
         else{ //Left branch
             indexMove = parent.indexMove - (int)Math.pow(2, indexRing)/2;
             //indexRod != current rod where the ring & indexRod != parent.indexRod;
-            indexRod = 3 - currentRods[indexRing] - parent.indexRod;
+            indexRod = 3 - currentRods[indexRing - 1] - parent.indexRod;
         }
-        currentRods[indexRing] = indexRod;
+        currentRods[indexRing - 1] = indexRod;
 
+        System.out.println("indexMove " + indexMove + ", indexRing " + indexRing + ", indexRod " + indexRod);
 
-        if(indexRing != 0){
+        if(indexRing != 1){
+            left = new Node();
+            right = new Node();
             left.create(this, false, currentRods);
             right.create(this, true, currentRods);
         }
@@ -29,11 +32,16 @@ public class Node { //Each node represents a move number.
     //Create start node. It defines where the ring
     public void create(int countRing, int endIndexRod, int[] currentRods){
         parent = null;
-        indexRing = countRing - 1;
-        indexMove = (int)Math.pow(2, indexRing + 1)/2;
+        indexRing = countRing;
+        indexMove = (int)Math.pow(2, indexRing)/2;
         indexRod = endIndexRod;
-        currentRods[indexRing] = indexRod;
-        if(indexRing != 0){
+
+        System.out.println("indexMove " + indexMove + ", indexRing " + indexRing + ", indexRod " + indexRod);
+
+        currentRods[indexRing - 1] = indexRod;
+        if(indexRing != 1){
+            left = new Node();
+            right = new Node();
             left.create(this, false, currentRods);
             right.create(this, true, currentRods);
         }
